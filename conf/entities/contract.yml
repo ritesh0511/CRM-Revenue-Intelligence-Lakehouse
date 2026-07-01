@@ -1,0 +1,49 @@
+entity_name: contract
+domain: crm_sales
+source:
+  source_subpath: "contract/"
+  file_format: parquet
+  source_type: dataverse_synapse_link
+  write_mode: append_only
+  delete_handling: process_delete_events
+  cdc:
+    operation_column: "change_operation"
+    delete_values: ["DELETE", "D"]
+    update_values: ["UPDATE", "U"]
+    insert_values: ["INSERT", "I"]
+bronze:
+  table_name: contract_raw
+  checkpoint_subpath: "bronze/contract/"
+  schema_subpath: "bronze/contract/"
+  watermark_type: source_high_watermark
+silver:
+  table_name: contract_curated
+  dedup_enabled: true
+  quarantine_enabled: true
+  primary_key: contractid
+  event_time_column: modifiedon
+  delete_strategy: soft_delete
+  active_flag_column: is_active
+gold:
+  fact_table_name: fact_contract
+  serving_view_name: vw_contract_bookings
+  business_key: contract_id
+  column_mapping:
+    contract_id: contractid
+    opportunity_id: opportunityid
+    quote_id: quoteid
+    contract_name: title
+    contract_value: totalprice
+    start_date: activeon
+    end_date: expireson
+    created_ts: createdon
+    modified_ts: modifiedon
+    status_code: statuscode
+    state_code: statecode
+quality:
+  mandatory_columns: [contractid]
+  non_negative_columns: [totalprice]
+  quarantine_on_failure: true
+history:
+  cdf_enabled: true
+  scd_type: none

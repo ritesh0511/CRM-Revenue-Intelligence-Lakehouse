@@ -1,0 +1,37 @@
+entity_name: pipeline_item
+domain: crm_sales
+source:
+  source_subpath: "pipeline_item/"
+  file_format: parquet
+  source_type: dataverse_synapse_link
+  write_mode: append_only
+  delete_handling: process_delete_events
+  cdc:
+    operation_column: "change_operation"
+    delete_values: ["DELETE", "D"]
+    update_values: ["UPDATE", "U"]
+    insert_values: ["INSERT", "I"]
+bronze:
+  table_name: pipeline_item_raw
+  checkpoint_subpath: "bronze/pipeline_item/"
+  schema_subpath: "bronze/pipeline_item/"
+  watermark_type: source_high_watermark
+silver:
+  table_name: pipeline_item_curated
+  dedup_enabled: true
+  quarantine_enabled: true
+  primary_key: pipelineitemid
+  event_time_column: modifiedon
+  delete_strategy: soft_delete
+  active_flag_column: is_active
+gold:
+  fact_table_name: fact_pipeline_item
+  serving_view_name: vw_pipeline_items
+  business_key: pipeline_item_id
+quality:
+  mandatory_columns: [pipelineitemid]
+  non_negative_columns: []
+  quarantine_on_failure: true
+history:
+  cdf_enabled: true
+  scd_type: none

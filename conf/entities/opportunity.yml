@@ -1,0 +1,63 @@
+entity_name: opportunity
+domain: crm_sales
+source:
+  source_subpath: "opportunity/"
+  file_format: parquet
+  source_type: dataverse_synapse_link
+  write_mode: append_only
+  delete_handling: process_delete_events
+  cdc:
+    operation_column: "change_operation"
+    delete_values: ["DELETE", "D"]
+    update_values: ["UPDATE", "U"]
+    insert_values: ["INSERT", "I"]
+bronze:
+  table_name: opportunity_raw
+  checkpoint_subpath: "bronze/opportunity/"
+  schema_subpath: "bronze/opportunity/"
+  watermark_type: source_high_watermark
+silver:
+  table_name: opportunity_curated
+  dedup_enabled: true
+  quarantine_enabled: true
+  primary_key: opportunityid
+  event_time_column: modifiedon
+  delete_strategy: soft_delete
+  active_flag_column: is_active
+gold:
+  fact_table_name: fact_opportunity
+  serving_view_name: vw_opportunity_pipeline
+  mode: current_active
+  delete_strategy: remove_from_gold
+  business_key: opportunity_id
+  snapshot:
+    enabled: true
+    snapshot_fact_table_name: fact_pipeline_snapshot
+    snapshot_serving_view_name: vw_pipeline_snapshot
+    snapshot_grain: daily
+    idempotency_keys: [snapshot_ts, opportunity_id]
+  column_mapping:
+    opportunity_id: opportunityid
+    opportunity_name: name
+    owner_id: ownerid
+    account_id: customerid
+    created_ts: createdon
+    modified_ts: modifiedon
+    expected_close_date: estimatedclosedate
+    estimated_value: estimatedvalue
+    probability: closeprobability
+    status_code: statuscode
+    state_code: statecode
+    stage_name: stepname
+  derived_columns:
+    weighted_amount:
+      enabled: true
+      amount_column: estimated_value
+      probability_column: probability
+quality:
+  mandatory_columns: [opportunityid, createdon]
+  non_negative_columns: [estimatedvalue]
+  quarantine_on_failure: true
+history:
+  cdf_enabled: true
+  scd_type: none

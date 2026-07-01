@@ -1,0 +1,35 @@
+env: prod
+
+catalog:
+  name: crm_prod
+  bronze_schema: bronze
+  silver_schema: silver
+  gold_schema: gold
+  ops_control_schema: ops_control
+  ops_quarantine_schema: ops_quarantine
+  serving_schema: serving
+
+storage:
+  storage_account: prodstorageacct
+  raw_container: raw
+  checkpoint_container: checkpoints
+  schema_container: schemas
+  quarantine_container: quarantine
+
+paths:
+  dataverse_base_path: "abfss://raw@prodstorageacct.dfs.core.windows.net/dataverse/"
+  checkpoint_base_path: "abfss://checkpoints@prodstorageacct.dfs.core.windows.net/crm/"
+  schema_base_path: "abfss://schemas@prodstorageacct.dfs.core.windows.net/crm/"
+  quarantine_base_path: "abfss://quarantine@prodstorageacct.dfs.core.windows.net/crm/"
+
+runtime_defaults:
+  trigger_mode: available_now
+  microbatch_interval: "5 minutes"
+  default_file_format: parquet
+  max_retry_count: 2
+
+features:
+  schema_evolution_enabled: true
+  quarantine_enabled: true
+  cdf_enabled_by_default: true
+  data_quality_enabled: true

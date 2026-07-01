@@ -1,0 +1,47 @@
+entity_name: quote
+domain: crm_sales
+source:
+  source_subpath: "quote/"
+  file_format: parquet
+  source_type: dataverse_synapse_link
+  write_mode: append_only
+  delete_handling: process_delete_events
+  cdc:
+    operation_column: "change_operation"
+    delete_values: ["DELETE", "D"]
+    update_values: ["UPDATE", "U"]
+    insert_values: ["INSERT", "I"]
+bronze:
+  table_name: quote_raw
+  checkpoint_subpath: "bronze/quote/"
+  schema_subpath: "bronze/quote/"
+  watermark_type: source_high_watermark
+silver:
+  table_name: quote_curated
+  dedup_enabled: true
+  quarantine_enabled: true
+  primary_key: quoteid
+  event_time_column: modifiedon
+  delete_strategy: soft_delete
+  active_flag_column: is_active
+gold:
+  fact_table_name: fact_quote
+  serving_view_name: vw_quote_conversion
+  business_key: quote_id
+  column_mapping:
+    quote_id: quoteid
+    opportunity_id: opportunityid
+    quote_name: name
+    quote_number: quotenumber
+    quote_amount: totalamount
+    created_ts: createdon
+    modified_ts: modifiedon
+    status_code: statuscode
+    state_code: statecode
+quality:
+  mandatory_columns: [quoteid]
+  non_negative_columns: [totalamount]
+  quarantine_on_failure: true
+history:
+  cdf_enabled: true
+  scd_type: none

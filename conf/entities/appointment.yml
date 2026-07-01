@@ -1,0 +1,38 @@
+entity_name: appointment
+domain: crm_activity
+source:
+  source_subpath: "appointment/"
+  file_format: parquet
+  source_type: dataverse_synapse_link
+  write_mode: append_only
+  delete_handling: process_delete_events
+  cdc:
+    operation_column: "change_operation"
+    delete_values: ["DELETE", "D"]
+    update_values: ["UPDATE", "U"]
+    insert_values: ["INSERT", "I"]
+bronze:
+  table_name: appointment_raw
+  checkpoint_subpath: "bronze/appointment/"
+  schema_subpath: "bronze/appointment/"
+  watermark_type: source_high_watermark
+silver:
+  table_name: appointment_curated
+  dedup_enabled: true
+  quarantine_enabled: true
+  primary_key: activityid
+  event_time_column: modifiedon
+  delete_strategy: soft_delete
+  active_flag_column: is_active
+gold:
+  fact_table_name: fact_activity
+  serving_view_name: vw_sales_activity
+  business_key: activity_id
+  activity_type: appointment
+quality:
+  mandatory_columns: [activityid]
+  non_negative_columns: []
+  quarantine_on_failure: true
+history:
+  cdf_enabled: true
+  scd_type: none
