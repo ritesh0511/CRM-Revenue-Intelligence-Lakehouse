@@ -1,65 +1,295 @@
 # CRM Revenue Intelligence Lakehouse
 
-Production-grade Azure Databricks lakehouse project for Dynamics 365 / Dataverse CRM pipeline analytics.
+End-to-end Azure Lakehouse project for CRM Revenue Analytics built using Azure Databricks, Delta Lake, ADLS Gen2, Auto Loader, Synapse Link patterns, and Power BI serving models.
 
-## Architecture
+> ⚠️ This project uses synthetic CRM data and is intended solely to demonstrate enterprise-scale data engineering design patterns. No proprietary or customer data is included.
 
-```text
+---
+
+## Business Problem
+
+CRM systems such as Microsoft Dynamics 365 and Dataverse are optimized for operational workloads but are not ideal for analytical reporting.
+
+Business teams require trusted and analytics-ready datasets for:
+
+- Revenue Pipeline Tracking
+- Opportunity Conversion Analysis
+- Quote Performance Monitoring
+- Contract Revenue Reporting
+- Sales Activity Analytics
+- Historical Pipeline Trend Analysis
+
+This project demonstrates how raw CRM operational data can be transformed into enterprise-grade analytical data products using a modern Lakehouse architecture.
+
+---
+
+## Solution Architecture
+
+[Architecture Diagram Here]
+
+### End-to-End Flow
+
 Dynamics 365 / Dataverse
-  -> Azure Synapse Link for Dataverse
-  -> ADLS Gen2
-  -> Databricks Auto Loader
-  -> Delta Bronze
-  -> Delta Silver Current-State
-  -> Delta Gold Facts + Snapshots
-  -> Databricks SQL Warehouse
-  -> Power BI
-```
 
-## What is included
+↓
 
-- Config-driven pipeline framework
-- Environment and entity YAML configs
-- Generic Bronze ingestion using Auto Loader
-- Generic Silver current-state merge with DQ, quarantine, and soft deletes
-- Gold facts for opportunity, quote, contract, activity
-- Pipeline snapshot fact
-- Serving views
-- Pipeline run registry and watermark tables
-- Basic observability SQL views
-- Databricks bundle YAML for workflows
-- Unit test scaffolding
+Azure Synapse Link
 
-## Important before deployment
+↓
 
-Update these placeholders before running:
+ADLS Gen2 Landing Zone
 
-- `conf/dev.yml`, `conf/uat.yml`, `conf/prod.yml`
-- ADLS storage account/container paths
-- Synapse Link entity subpaths
-- CRM column names in entity YAML files
-- Databricks workspace repo path in `databricks.yml`
-- cluster node type / runtime version
+↓
 
-## Deployment
+Databricks Auto Loader
 
-```bash
-databricks bundle validate -t dev
-databricks bundle deploy -t dev
-```
+↓
 
-Run SQL bootstrap first:
+Bronze Layer
 
-```sql
--- sql/bootstrap/001_platform_bootstrap.sql
-```
+↓
 
-## Recommended execution order
+Silver Layer
 
-1. Configure Synapse Link and confirm ADLS landing paths
-2. Run platform bootstrap SQL
-3. Deploy bundle to dev
-4. Run `wf_crm_sales_current_pipeline_dev`
-5. Validate Bronze/Silver/Gold tables
-6. Validate serving views from Databricks SQL Warehouse
-7. Promote to UAT/Prod using bundle targets
+↓
+
+Gold Layer
+
+↓
+
+Serving Views
+
+↓
+
+Power BI
+
+---
+
+## Technology Stack
+
+| Category | Technology |
+|-----------|------------|
+| Cloud Platform | Azure |
+| Storage | ADLS Gen2 |
+| Compute | Azure Databricks |
+| Processing | PySpark |
+| Lakehouse | Delta Lake |
+| Ingestion | Databricks Auto Loader |
+| Source Integration | Azure Synapse Link Pattern |
+| Governance | Unity Catalog |
+| Orchestration | Databricks Workflows |
+| Reporting | Power BI |
+| CI/CD | Databricks Bundles |
+
+---
+
+## Key Engineering Features
+
+✅ Incremental ingestion using Auto Loader
+
+✅ Bronze → Silver → Gold Medallion Architecture
+
+✅ Delta MERGE based upserts
+
+✅ Soft-delete processing
+
+✅ Metadata-driven entity onboarding
+
+✅ Data Quality Framework
+
+✅ Quarantine Zone for bad records
+
+✅ Watermark tracking
+
+✅ Run registry control framework
+
+✅ Historical snapshot generation
+
+✅ Power BI serving layer
+
+✅ Workflow orchestration
+
+✅ CI/CD-ready deployment model
+
+---
+
+## Business Entities
+
+### CRM Entities
+
+- Opportunity
+- Quote
+- Contract
+- Phone Call
+- Appointment
+- Pipeline Item
+
+---
+
+## Medallion Architecture
+
+### Bronze Layer
+
+Raw source-aligned ingestion layer preserving:
+
+- Source records
+- File lineage
+- Operation type
+- Delete indicators
+
+### Silver Layer
+
+Curated current-state layer applying:
+
+- Data Quality checks
+- Deduplication
+- Soft-delete logic
+- Delta MERGE upserts
+
+### Gold Layer
+
+Business-ready datasets powering analytics and reporting.
+
+### Serving Layer
+
+Power BI optimized views for reporting consumers.
+
+---
+
+## Data Quality Framework
+
+Implemented quality controls:
+
+- Mandatory field validation
+- Numeric validation
+- Schema validation
+- Delete event validation
+
+Invalid records are redirected to a quarantine framework for operational review.
+
+---
+
+## Operational Monitoring
+
+### Control Tables
+
+- pipeline_run_registry
+- pipeline_watermark
+- bad_records
+
+### Monitoring Views
+
+- Recent Pipeline Runs
+- Failed Pipeline Runs
+- Layer Freshness Monitoring
+- Stale Watermark Detection
+- Quarantine Summary
+- Pipeline Health Dashboard
+
+---
+
+## Gold Data Products
+
+### Fact Tables
+
+- fact_opportunity
+- fact_quote
+- fact_contract
+- fact_activity
+- fact_pipeline_snapshot
+
+### Serving Views
+
+- vw_opportunity_pipeline
+- vw_quote_conversion
+- vw_contract_bookings
+- vw_sales_activity
+- vw_pipeline_snapshot
+- vw_rep_scorecard
+- vw_stale_deals
+
+---
+
+## Engineering Concepts Demonstrated
+
+- Lakehouse Architecture
+- Medallion Architecture
+- Incremental Processing
+- Metadata-Driven Pipelines
+- Delta MERGE Operations
+- Data Quality Engineering
+- Soft Delete Framework
+- Watermark Management
+- Historical Snapshot Design
+- Operational Observability
+- Workflow Orchestration
+- CI/CD for Data Platforms
+
+---
+
+## Repository Structure
+
+├── conf/
+
+├── src/
+
+├── sql/
+
+├── workflows/
+
+├── tests/
+
+├── docs/
+
+│ ├── architecture/
+
+│ ├── screenshots/
+
+│ └── diagrams/
+
+├── data/
+
+│ └── synthetic/
+
+└── README.md
+
+---
+
+## Screenshots
+
+### Architecture Diagram
+
+[Add architecture image]
+
+### Workflow Orchestration
+
+[Add Databricks workflow screenshot]
+
+### Data Quality Monitoring
+
+[Add quarantine screenshot]
+
+### Power BI Dashboard
+
+[Add dashboard screenshot]
+
+---
+
+## Future Enhancements
+
+- Real-Time Streaming CDC
+- Alerting Framework
+- Data Lineage Visualization
+- Semantic Model Layer
+- ML-based Revenue Forecasting
+- Credit Risk Intelligence Lakehouse
+
+---
+
+## Author
+
+Ritesh Diwane
+
+Data Engineer
+
+Focused on Azure Databricks, Lakehouse Architecture, Data Engineering, and Analytics Platform Design.
