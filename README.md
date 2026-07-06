@@ -25,7 +25,8 @@ This project demonstrates how raw CRM operational data can be transformed into e
 
 ## Solution Architecture
 
-[Architecture Diagram Here]
+<img width="1024" height="1536" alt="crm_lakehouse_architecture" src="https://github.com/ritesh0511/CRM-Revenue-Intelligence-Lakehouse/blob/master/docs/crm_lakehouse_architecture.png" />
+
 
 ### End-to-End Flow
 
