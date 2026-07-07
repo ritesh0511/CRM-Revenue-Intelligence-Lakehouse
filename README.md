@@ -30,41 +30,7 @@ This project demonstrates how raw CRM operational data can be transformed into e
 
 ### End-to-End Flow
 
-Dynamics 365 / Dataverse
-
-↓
-
-Azure Synapse Link
-
-↓
-
-ADLS Gen2 Landing Zone
-
-↓
-
-Databricks Auto Loader
-
-↓
-
-Bronze Layer
-
-↓
-
-Silver Layer
-
-↓
-
-Gold Layer
-
-↓
-
-Serving Views
-
-↓
-
-Power BI
-
----
+<img width="1024" height="1536" alt="CRM_Workflow_DAG" src="https://github.com/ritesh0511/CRM-Revenue-Intelligence-Lakehouse/blob/master/docs/CRM_Workflow_DAG.png" />
 
 ## Technology Stack
 
