@@ -222,25 +222,6 @@ Invalid records are redirected to a quarantine framework for operational review.
 
 ---
 
-## Screenshots
-
-### Architecture Diagram
-
-[Add architecture image]
-
-### Workflow Orchestration
-
-[Add Databricks workflow screenshot]
-
-### Data Quality Monitoring
-
-[Add quarantine screenshot]
-
-### Power BI Dashboard
-
-[Add dashboard screenshot]
-
----
 
 ## Future Enhancements
 
