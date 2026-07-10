@@ -2,7 +2,12 @@
 
 End-to-end Azure Lakehouse project for CRM Revenue Analytics built using Azure Databricks, Delta Lake, ADLS Gen2, Auto Loader, Synapse Link patterns, and Power BI serving models.
 
-> ⚠️ This project uses synthetic CRM data and is intended solely to demonstrate enterprise-scale data engineering design patterns. No proprietary or customer data is included.
+> ⚠️ Disclaimer
+>
+> This repository is an independent implementation built using synthetic CRM data.
+> The solution is inspired by enterprise CRM analytics and lakehouse patterns that I have been exposed to in professional environments. However, this repository does not contain any proprietary company assets, source code, architecture diagrams, business logic, customer data, confidential information, or intellectual property.
+>
+> All datasets, configurations, and implementations included in this repository were created solely for learning, demonstration, and portfolio purposes.
 
 ---
 
